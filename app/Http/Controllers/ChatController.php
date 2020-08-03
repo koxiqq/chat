@@ -7,16 +7,31 @@ use App\Message as Message;
 use App\Http\Controllers\Controller;
 
 
+/**
+ * Class ChatController
+ * @package App\Http\Controllers
+ */
 class ChatController extends Controller
 {
+
     private static $entytyKeyWords =  [
         'привет'=>'приветствие',
         'который час'=>'время',
+        'сколлько времени'=>'время'
 ];
-public static function showAll(){
+
+    /**
+     * @return Message[]- возвращает все сообщения которые хранятся в базе данных
+     */
+    public static function showAll(){
     return Message::all();
 }
-public static function sendMessage($message){
+
+    /**
+     * @param $message - сообщение полученное от пользователя
+     * Добавляет сообщение отправленное пользователем в базу данных
+     */
+    public static function sendMessage($message){
     Message::create([
         'message'=>$message,
         'sender'=>'user'
@@ -28,12 +43,24 @@ public static function sendMessage($message){
         'sender'=>'chat'
     ]);
 }
-private static function getIntent($message){
+
+    /**
+     * @param $message
+     * @return mixed|string
+     * возвращает намерение пользователя в зависимости от отправленного сообщения
+     */
+    private static function getIntent($message){
     foreach (self::$entytyKeyWords as $keyWord=>$entyty){
         if(strpos($message,$keyWord)!==false) return $entyty;
     }
     return 'unknown';
 }
+
+    /**
+     * @param $intent
+     * @return false|string
+     * Возвращает что ответит "бот" на сообщение пользователя
+     */
     private static function getResponse($intent){
         switch ($intent){
             case 'приветствие':
@@ -46,4 +73,3 @@ private static function getIntent($message){
         return 'unknown';
     }
 }
-//todo: разобраться с томитой
